@@ -8,6 +8,8 @@ TagManager:
   - Goal
   - Left Goal
   - Right Goal
+  - Reverse
+  - WiiMote
   layers:
   - Default
   - TransparentFX
@@ -42,6 +44,15 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 2074005625
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Front
+    uniqueID: 211455543
+    locked: 0
+  - name: ScreenBlock
+    uniqueID: 593905571
     locked: 0

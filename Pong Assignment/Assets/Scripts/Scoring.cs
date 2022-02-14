@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class Scoring : MonoBehaviour
 {
+    //public GameObject scoringAudio;
     public GameObject leftText;
     public GameObject rightText;
     public GameObject winnerText;
     public GameObject puck;
-
     public int lScore = 0;
     public int rScore = 0;
+
     public enum Side
     {
         left,
@@ -32,43 +33,57 @@ public class Scoring : MonoBehaviour
     public void makeGoal(Side side)
     {
         //Debug.Log("Goal!!!");
+        FindObjectOfType<AudioManager>().playSound("goal");
+        int niceShotChance = Random.Range(0, 10);
+        if (niceShotChance > 5) 
+            FindObjectOfType<AudioManager>().playSound("niceShot");
 
         if (side == Side.left)
         {
             lScore++;
-            Debug.Log("Left Scores, Score: " + lScore.ToString() + " " + rScore.ToString());
+            //Debug.Log("Left Scores, Score: " + lScore.ToString() + " " + rScore.ToString());
             leftText.GetComponent<TMPro.TextMeshProUGUI>().text = lScore.ToString();
+            leftText.GetComponent<TMPro.TextMeshProUGUI>().fontSize += 2;
+            rightText.GetComponent<TMPro.TextMeshProUGUI>().fontSize -= 2;
             if (lScore >= 11)
                 gameWon(Side.left);
         } else
         {
             rScore++;
-            Debug.Log("Right Scores, Score: " + lScore.ToString() + " " + rScore.ToString());
+            //Debug.Log("Right Scores, Score: " + lScore.ToString() + " " + rScore.ToString());
             rightText.GetComponent<TMPro.TextMeshProUGUI>().text = rScore.ToString();
+            rightText.GetComponent<TMPro.TextMeshProUGUI>().fontSize += 2;
+            leftText.GetComponent<TMPro.TextMeshProUGUI>().fontSize -= 2;
             if (rScore >= 11)
                 gameWon(Side.right);
         }
 
-        //After the score gets to 2, delete the winner message
-        if (lScore >=  2 || rScore >= 2)
+        ////Change text color based on score
+        //if (lScore > rScore)
+        //{
+        //    leftText.GetComponent<TMPro.TextMeshProUGUI>().color = new Color(110f, 198f, 230f, 228f);
+        //    rightText.GetComponent<TMPro.TextMeshProUGUI>().color = new Color(255f, 255f, 255f, 228f);
+        //} else if (rScore > lScore)
+        //{
+        //    rightText.GetComponent<TMPro.TextMeshProUGUI>().color = new Color(110f, 198f, 230f, 228f);
+        //    leftText.GetComponent<TMPro.TextMeshProUGUI>().color = new Color(255f, 255f, 255f, 228f);
+        //} else
+        //{
+        //    rightText.GetComponent<TMPro.TextMeshProUGUI>().color = new Color(255f, 255f, 255f, 228f);
+        //    leftText.GetComponent<TMPro.TextMeshProUGUI>().color = new Color(255f, 255f, 255f, 228f);
+        //}
+
+        //After the score gets to 1, delete the winner message
+        if (lScore >=  1 || rScore >= 1)
         {
             winnerText.GetComponent<TMPro.TextMeshProUGUI>().text = "";
         }
     }
 
-    /*public void resetPuck(Side scoredOn)
-    {
-        Debug.Log("Resetting Puck");
-        //Reset Position
-        Rigidbody2D puckRb = puck.GetComponent<Rigidbody2D>();
-        puckRb.position = Vector3.zero;
-        //Reset Velocity
-        Puck puckScript = puck.GetComponent<Puck>();
-
-    }*/
-
     public void gameWon(Side side)
     {
+        FindObjectOfType<AudioManager>().playSound("win");
+        FindObjectOfType<AudioManager>().playSound("cheering");
         lScore = 0;
         rScore = 0;
 
@@ -76,16 +91,18 @@ public class Scoring : MonoBehaviour
         {
             Debug.Log("-----Left Wins!!!-----");
             winnerText.GetComponent<TMPro.TextMeshProUGUI>().text = "Left side wins!";
-            winnerText.GetComponent<TMPro.TextMeshProUGUI>().color = Color.blue;
+            winnerText.GetComponent<TMPro.TextMeshProUGUI>().color = new Color(125f, 208f, 237f, 255f);
         } else
         {
             Debug.Log("-----Right Wins!!!-----");
             winnerText.GetComponent<TMPro.TextMeshProUGUI>().text = "Right side wins!";
-            winnerText.GetComponent<TMPro.TextMeshProUGUI>().color = Color.red;
+            winnerText.GetComponent<TMPro.TextMeshProUGUI>().color = new Color(125f, 208f, 237f, 255f);
         }
 
         //Reset score texts
         leftText.GetComponent<TMPro.TextMeshProUGUI>().text = lScore.ToString();
         rightText.GetComponent<TMPro.TextMeshProUGUI>().text = rScore.ToString();
+        leftText.GetComponent<TMPro.TextMeshProUGUI>().fontSize = 78.3f;
+        rightText.GetComponent<TMPro.TextMeshProUGUI>().fontSize = 78.3f;
     }
 }

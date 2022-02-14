@@ -11,6 +11,8 @@ public class Puck : MonoBehaviour
     private int xDirection = 1; //1 for right -1 for left
     private int yDirection = 1; //1 for up, -1 for down
     private float yAngle = 0.0f;
+    private int powerUpCountdown = 0;
+    private int powerUpTrigger = 8;
 
     // Start is called before the first frame update
     void Start()
@@ -40,20 +42,47 @@ public class Puck : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Paddle"))
         {
+            //Play sounds
+            FindObjectOfType<AudioManager>().playSound("hit");
+            FindObjectOfType<AudioManager>().pitchUp("hit");
+
             //Change x dir, increase speed, and randomize y angle
             xDirection *= -1;
             movementSpeed += (float)0.2;
             yAngle = Random.Range(0.0f, 5.0f);
-            Debug.Log("Hit a paddle, movement speed now: " + movementSpeed);
+
+            //Spawning PowerUps
+            powerUpCountdown++;
+            if (powerUpCountdown >= powerUpTrigger)
+            {
+                FindObjectOfType<PowerUpManager>().spawnPowerUp();
+                powerUpCountdown = 0;
+            }
         }
         else
         {
+            FindObjectOfType<AudioManager>().playSound("wallHit");
             yDirection *= -1;
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D collider) {
+        //Debug.Log("TRIGGER ENTER");
+        if (collider.gameObject.CompareTag("Reverse")) {
+            FindObjectOfType<AudioManager>().playSound("powerUp1");
+            xDirection *= -1;
+            Destroy(collider.gameObject);
+        }
+        else if (collider.gameObject.CompareTag("WiiMote")) {
+            FindObjectOfType<AudioManager>().playSound("powerUp1");
+            FindObjectOfType<Fade>().startFade();
+            Destroy(collider.gameObject);
+        }
+    }    
+
     public void resetPuck(int xDir)
     {
+        FindObjectOfType<AudioManager>().resetPitch("hit");
         transform.position = Scoring.transform.position;
         movementSpeed = 6.4f;
         xDirection = xDir;
